@@ -15,7 +15,7 @@ public class Phase2 : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
-        if (timer > 11.0f)
+        if (timer > 14.0f)
         {
             Application.LoadLevel("MainMenu");
         }
