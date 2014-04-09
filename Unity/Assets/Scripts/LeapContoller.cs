@@ -19,6 +19,7 @@ public class LeapContoller : MonoBehaviour
         coolDownValue = 0.5f;
         currCD = 0.0f;
         cooldowner = false;
+
     }
 
     void Update()
