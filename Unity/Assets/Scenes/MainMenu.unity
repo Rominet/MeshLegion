@@ -179,7 +179,7 @@ Renderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 684917094}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_LightmapIndex: 255
@@ -301,7 +301,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &878968668
 Transform:
   m_ObjectHideFlags: 0
@@ -319,7 +319,7 @@ Renderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 878968667}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_LightmapIndex: 255
@@ -427,14 +427,14 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!23 &1180603528
 Renderer:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1180603527}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_LightmapIndex: 255
@@ -599,7 +599,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1818415713
 Transform:
   m_ObjectHideFlags: 0
@@ -651,6 +651,8 @@ GameObject:
   - 92: {fileID: 1858154173}
   - 124: {fileID: 1858154172}
   - 81: {fileID: 1858154171}
+  - 114: {fileID: 1858154176}
+  - 148: {fileID: 1858154177}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -719,6 +721,35 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
+--- !u!114 &1858154176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1858154170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c357d1cc077a93498ce063f49fdedf0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: {fileID: 155989716}
+  imFirefly: {fileID: 1881530829}
+  fireflyIsWaiting: {fileID: 878968669}
+  imPrincess: {fileID: 701507595}
+  princessIsWaiting: {fileID: 1180603528}
+  backButton: {fileID: 684917096}
+--- !u!148 &1858154177
+NetworkView:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1858154170}
+  m_Enabled: 1
+  m_StateSynchronization: 2
+  m_Observed: {fileID: 1858154175}
+  m_ViewID:
+    m_ID: 1
+    m_Type: 1
 --- !u!1 &1881530828
 GameObject:
   m_ObjectHideFlags: 0

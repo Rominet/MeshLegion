@@ -4,58 +4,101 @@ using System.Collections.Generic;
 
 public class MenuScript : MonoBehaviour
 {
+	[SerializeField]
+	private MeshRenderer title;
     [SerializeField]
-    private Texture logo;
+	private MeshRenderer imFirefly;
+	[SerializeField]
+	private MeshRenderer fireflyIsWaiting;
+	[SerializeField]
+	private MeshRenderer imPrincess;
+	[SerializeField]
+	private MeshRenderer princessIsWaiting;
+	[SerializeField]
+	private MeshRenderer backButton;
 
 	private static string 		   ipServer = "127.0.0.1";
 	private static readonly int portServer = 6600;
 
 	private static readonly string ipFacilitator = "67.225.180.24";
 	private static readonly int portFacilitator = 50005;
+
+	private bool clicking;
     
 	private bool networkInitialize;
     private bool mainMenu;
-	private bool princess;
-	private bool firefly;
     private string loginPlayer;
     private string loginServer;
 
     private List<string> listOfPlayers;
+
     void Start()
     {
         Application.runInBackground = true;
+		this.clicking = false;
 		this.networkInitialize = false;
         this.mainMenu = true;
-        this.princess = false;
-		this.firefly = false;
         this.loginPlayer = "Princess";
         this.loginServer = "Firefly";
-        listOfPlayers = new List<string>();
+        this.listOfPlayers = new List<string>();
     }
-
-    void OnGUI()
-    {
-        GUI.DrawTexture(new Rect(Screen.width / 2 - logo.width / 3 - 50, 0, 470, 200), logo);
-		if (!this.mainMenu) {//Network.peerType == NetworkPeerType.Disconnected) {
-			WorldInfo.countNetworkConnection = Network.connections.Length + 1;
-			if (this.firefly) {
-				var configStyle = new GUIStyle ();
-				configStyle.normal.textColor = Color.black;   
-				GUI.Label (new Rect (Screen.width * 0.5f-200.0f, Screen.height * 0.5f, 450, 40), "Vous commencez à chercher la princesse dans ce grand chateau...", configStyle);
-			} else if (this.princess) {
-				var configStyle = new GUIStyle ();
-				configStyle.normal.textColor = Color.black;   
-				GUI.Label (new Rect (Screen.width * 0.5f-200.0f, Screen.height * 0.5f, 450, 40), "Vous pleurez dans votre coin en attendant que l'on vienne vous aider...", configStyle);
-			}
-			if (GUI.Button(new Rect(Screen.width * 0.5f-70.0f, Screen.height * 0.5f+60, 140, 30), "Retour"))
-			{
-				mainMenu = true;
-				if (Network.peerType != NetworkPeerType.Disconnected) {
-					Network.Disconnect();
-					MasterServer.UnregisterHost();
+	void Update () {
+		if (Input.GetMouseButtonDown(0)) {
+			clicking = true;
+		} else if (Input.GetMouseButtonUp(0)) {
+			clicking = false;
+		}
+	}
+	void FixedUpdate() {
+		if (clicking) {
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			RaycastHit hit;
+			
+			if (Physics.Raycast(ray, out hit, 100)) {
+				Debug.Log ("TOUCHE : "+hit.collider.name);
+				if (hit.collider.name == "IPrincessLogic" && this.mainMenu) {
+					if (!princessIsWaiting.enabled) {
+						WorldInfo.countNetworkConnection = Network.connections.Length + 1;
+						WorldInfo.login = this.loginServer;
+						Network.InitializeServer(1, 6600, true);
+					}
+					this.mainMenu = false;
+					title.enabled = false;
+					imFirefly.enabled = false;
+					imPrincess.enabled = false;
+					princessIsWaiting.enabled = true;
+					backButton.enabled = true;
+				} else if (hit.collider.name == "IFireflyLogic" && this.mainMenu) {
+					if (!fireflyIsWaiting.enabled) {
+						WorldInfo.countNetworkConnection = Network.connections.Length + 1;
+						WorldInfo.login = this.loginPlayer;
+						tryToConnect();
+					}
+					this.mainMenu = false;
+					title.enabled = false;
+					imFirefly.enabled = false;
+					imPrincess.enabled = false;
+					fireflyIsWaiting.enabled = true;
+					backButton.enabled = true;
+				} else if (hit.collider.name == "BackButtonLogic" && !this.mainMenu) {
+					this.mainMenu = true;
+					title.enabled = true;
+					imFirefly.enabled = true;
+					imPrincess.enabled = true;
+					fireflyIsWaiting.enabled = false;
+					princessIsWaiting.enabled = false;
+					backButton.enabled = false;
+					if (Network.peerType != NetworkPeerType.Disconnected) {
+						Network.Disconnect();
+						MasterServer.UnregisterHost();
+					}
 				}
 			}
-		} else {
+		}
+	}
+    void OnGUI()
+    {
+		if (this.mainMenu) {
 			var configStyle = new GUIStyle();
 			configStyle.normal.textColor = Color.black;
 			MenuScript.ipServer = GUI.TextField(new Rect(0, Screen.height-20, 100, 20), MenuScript.ipServer);
@@ -67,21 +110,6 @@ public class MenuScript : MonoBehaviour
 				Network.InitializeSecurity();
 				this.networkInitialize = true;
 			}
-
-            if (GUI.Button(new Rect(Screen.width * 0.5f - 140, Screen.height * 0.5f - 30, 280, 30), "Play the Princess"))
-            {
-				this.mainMenu = this.firefly = false;
-				this.princess = true;
-				WorldInfo.login = this.loginServer;
-				Network.InitializeServer(1, 6600, true);
-            }
-			if (GUI.Button(new Rect(Screen.width * 0.5f - 140, Screen.height * 0.5f + 30, 280, 30), "Play the Firefly"))
-            {
-				this.mainMenu = this.princess = false;
-				this.firefly = true;
-				WorldInfo.login = this.loginPlayer;
-				tryToConnect();
-            }
         }
     }
 
