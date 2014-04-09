@@ -73,7 +73,7 @@ public class OVRPlayerController : OVRComponent
 	protected Transform DirXform = null;
 	
 	// We can adjust these to influence speed and rotation of player controller
-	private float MoveScaleMultiplier     = 1.0f; 
+	private float MoveScaleMultiplier     = 5.0f; 
 	private float RotationScaleMultiplier = 1.0f; 
 	private bool  AllowMouseRotation      = true;
 	private bool  HaltUpdateMovement      = false;
@@ -242,17 +242,23 @@ public class OVRPlayerController : OVRComponent
 		// Run!
 		if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
 			moveInfluence *= 2.0f;
-			
+
+		float deltaRotation = 0.0f;
+
 		if(DirXform != null)
 		{
 			if (moveForward)
 				MoveThrottle += DirXform.TransformDirection(Vector3.forward * moveInfluence);
 			if (moveBack)
 				MoveThrottle += DirXform.TransformDirection(Vector3.back * moveInfluence) * BackAndSideDampen;
-			if (moveLeft)
-				MoveThrottle += DirXform.TransformDirection(Vector3.left * moveInfluence) * BackAndSideDampen;
-			if (moveRight)
-				MoveThrottle += DirXform.TransformDirection(Vector3.right * moveInfluence) * BackAndSideDampen;
+			if (moveLeft) {
+				deltaRotation = -2;//OVRGamepadController.GPC_GetAxis((int)OVRGamepadController.Axis.LeftXAxis);
+				//MoveThrottle += DirXform.TransformDirection(Vector3.left * moveInfluence) * BackAndSideDampen;
+			}
+			if (moveRight) {
+				deltaRotation = 2;
+				//MoveThrottle += DirXform.TransformDirection(Vector3.right * moveInfluence) * BackAndSideDampen;
+			}
 		}
 			
 		// Rotate
@@ -272,9 +278,12 @@ public class OVRPlayerController : OVRComponent
 		// Move
 			
 		// Rotate
-		float deltaRotation = 0.0f;
-		if(AllowMouseRotation == false)
-			deltaRotation = Input.GetAxis("Mouse X") * rotateInfluence * 3.25f;
+
+		/*if (AllowMouseRotation == false) {
+			Debug.Log ("AllowMouse");
+			deltaRotation = Input.GetAxis ("Mouse X") * rotateInfluence * 3.25f;
+		}*/
+
 			
 		float filteredDeltaRotation = (sDeltaRotationOld * 0.0f) + (deltaRotation * 1.0f);
 		YRotation += filteredDeltaRotation;
@@ -307,10 +316,11 @@ public class OVRPlayerController : OVRComponent
 	    		MoveThrottle += Mathf.Abs(leftAxisY) *		
 				DirXform.TransformDirection(Vector3.back * moveInfluence) * BackAndSideDampen;
 				
-			if(leftAxisX < 0.0f)
+			if(leftAxisX < 0.0f) {
 	    		MoveThrottle += Mathf.Abs(leftAxisX) *
 				DirXform.TransformDirection(Vector3.left * moveInfluence) * BackAndSideDampen;
-				
+			}
+
 			if(leftAxisX > 0.0f)
 				MoveThrottle += leftAxisX *
 				DirXform.TransformDirection(Vector3.right * moveInfluence) * BackAndSideDampen;
