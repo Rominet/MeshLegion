@@ -6,6 +6,9 @@ public class HoveringButtons : MonoBehaviour
     [SerializeField]
     Texture[] textures;
 
+    [SerializeField]
+    GameObject child;
+
     // Use this for initialization
     void Start()
     {
@@ -21,7 +24,7 @@ public class HoveringButtons : MonoBehaviour
 
     void OnMouseEnter()
     {
-        this.gameObject.renderer.material.SetTexture(0, textures[1]); 
+        child.renderer.material.SetTexture(0, textures[1]); 
     }
 
     /// <summary>
@@ -29,6 +32,6 @@ public class HoveringButtons : MonoBehaviour
     /// </summary>
     void OnMouseExit()
     {
-        this.gameObject.renderer.material.SetTexture(0, textures[0]); 
+        child.renderer.material.SetTexture(0, textures[0]); 
     }
 }
