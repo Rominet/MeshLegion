@@ -4,6 +4,14 @@ using System.Collections;
 public class FairyDustScript : MonoBehaviour {
 
     [SerializeField]
+    private ParticleSystem _partSystem;
+    public ParticleSystem PartSystem
+    {
+        get { return _partSystem; }
+        set { _partSystem = value; }
+    }
+
+    [SerializeField]
     private LayerMask _faeryMask;
     public LayerMask FaeryMask
     {
@@ -12,31 +20,37 @@ public class FairyDustScript : MonoBehaviour {
     }
 
     public GameObject Sphere;
-    public Vector3 _defaultParticlePosition;
+    public float _defaultParticleEmissionRate;
 
-    private bool clicking = false;
+    private enum ClickState
+    {
+        IDLE, CLICKING, RELEASING
+    }
+
+    private ClickState leftClick = ClickState.IDLE;
 
 	// Use this for initialization
 	void Start () {
-        _defaultParticlePosition = Sphere.transform.position;
+        _defaultParticleEmissionRate = PartSystem.emissionRate;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	    if (Input.GetMouseButtonDown(0))
         {
-            clicking = true;
+            leftClick = ClickState.CLICKING;
+            PartSystem.emissionRate = _defaultParticleEmissionRate;
         }
         else if (Input.GetMouseButtonUp(0))
         {
-            clicking = false;
-            Sphere.transform.position = _defaultParticlePosition;
+            leftClick = ClickState.RELEASING;
+            PartSystem.emissionRate = 0;
         }
 	}
 
     void FixedUpdate()
     {
-        if (clicking)
+        if (leftClick == ClickState.CLICKING)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
