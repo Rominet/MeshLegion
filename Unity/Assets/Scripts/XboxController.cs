@@ -1,19 +1,40 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 public class XboxController : MonoBehaviour
 {
+    bool _princessHasShot;
+    float coolDownValue;
+    float currCD;
 
-    // Use this for initialization
     void Start()
     {
-
+        _princessHasShot = false;
+        coolDownValue = 0.5f;
+        currCD = 0.0f;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1"))
-            Debug.Log("trigger detected");
+        float leftTrigger = Input.GetAxis("3rd");
+
+        if(leftTrigger > 0.5f && !_princessHasShot && currCD == 0.0f)
+        {
+            Debug.Log("log that");
+            _princessHasShot = true;
+            currCD = coolDownValue;
+        }
+        else if (leftTrigger < 0.5f && _princessHasShot && currCD == 0.0f) 
+        {
+            _princessHasShot = false;
+        }
+
+        if (currCD != 0.0f)
+        {
+            currCD -= Time.deltaTime;
+            if (currCD < 0.0f)
+                currCD = 0.0f;
+        }
     }
 }
