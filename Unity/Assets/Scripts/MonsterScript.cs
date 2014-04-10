@@ -84,4 +84,32 @@ public class MonsterScript : MonoBehaviour {
         _currentState = State.FOLLOWING;
         AnimControlerScript.SelectAnimation(_currentState);
     }
+
+    public void Spawn(Vector3 position)
+    {
+        transform.position = position;
+        if(NavScript != null)
+        {
+            NavScript.NavAgent.Warp(position);
+            NavScript.enabled = true;
+        }
+        else if (GhostScript != null)
+        {
+            GhostScript.AllowedToMove = true;
+        }
+    }
+
+    public void Aggro(Vector3 aggroPoint, float duration)
+    {
+        if (NavScript != null)
+        {
+            NavScript.NavAgent.SetDestination(aggroPoint);
+            NavScript.NextPathUpdateTime = Time.time + duration;
+        }
+        else if (GhostScript != null)
+        {
+            GhostScript.TargetPos = aggroPoint;
+            GhostScript.NextPathUpdateTime = Time.time + duration;
+        }
+    }
 }

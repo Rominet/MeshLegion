@@ -22,11 +22,19 @@ public class GhostScript : MonoBehaviour {
     private Transform _targetTransform;
     private Transform _transform;
 
-    private bool _allowedToMove = true;
+    private bool _allowedToMove = false;
     public bool AllowedToMove
     {
         get { return _allowedToMove; }
         set { _allowedToMove = value; }
+    }
+
+    [SerializeField]
+    private Vector3 _targetPos;
+    public Vector3 TargetPos
+    {
+      get { return _targetPos; }
+      set { _targetPos = value; }
     }
 
     [SerializeField]
@@ -37,24 +45,34 @@ public class GhostScript : MonoBehaviour {
         set { _defaultRefreshPathTimer = value; }
     }
 
+    [SerializeField]
     private float _nextPathUpdateTime;
+    public float NextPathUpdateTime
+    {
+      get { return _nextPathUpdateTime; }
+      set { _nextPathUpdateTime = value; }
+    }
 
 	// Use this for initialization
 	void Start () {
-        _targetTransform = Target.transform;
+        if (Target != null)
+            _targetTransform = Target.transform;
+        else
+            _targetTransform = GameObject.FindGameObjectWithTag("Player").transform;
         _transform = transform;
-        rigidbody.velocity = new Vector3(0, 0, MovementSpeed);
 	}
 
 	// Update is called once per frame
 	void FixedUpdate () {
 
-        if (Time.time >= _nextPathUpdateTime)
+        if (Time.time >= NextPathUpdateTime)
         {
-            _nextPathUpdateTime = Time.time + DefaultRefreshPathTimer;
+            NextPathUpdateTime = Time.time + DefaultRefreshPathTimer;
+            if (_targetTransform != null)
+                TargetPos = _targetTransform.position;
             if (AllowedToMove)
             {
-                _transform.LookAt(_targetTransform.position);
+                _transform.LookAt(TargetPos);
                 rigidbody.velocity = transform.forward * MovementSpeed;
             }
         }
