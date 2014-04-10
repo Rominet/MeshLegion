@@ -15,5 +15,7 @@ public class Exi : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.Escape))
             Application.Quit();
+        if (Input.GetKeyUp(KeyCode.Space))
+            Application.LoadLevel("MainMenu");
     }
 }
