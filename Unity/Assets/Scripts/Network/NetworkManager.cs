@@ -27,6 +27,8 @@ public class NetworkManager : MonoBehaviour {
 	private GameObject cameraFirstPerson;
 	[SerializeField]
 	private GameObject cameraThirdPerson;
+    [SerializeField]
+    private MobManagerScript mobManagerScript;
 
 	private Vector3 playerSpawn = new Vector3(0, 0, 0);
 	//private bool inGame;
@@ -279,6 +281,9 @@ public class NetworkManager : MonoBehaviour {
 				case 1: //FairyDust
 					this.cameraThirdPerson.GetComponent<FairyDustScript>().receptWishesFromServer(infos);
 					break;
+                case 2: //MobManagerScript
+                    this.mobManagerScript.receptWishesFromServer(infos);
+                    break;
             }
             
         }

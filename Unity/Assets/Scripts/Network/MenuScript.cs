@@ -100,7 +100,7 @@ public class MenuScript : MonoBehaviour
     {
 		if (this.mainMenu) {
 			var configStyle = new GUIStyle();
-			configStyle.normal.textColor = Color.black;
+			configStyle.normal.textColor = Color.white;
 			MenuScript.ipServer = GUI.TextField(new Rect(0, Screen.height-20, 100, 20), MenuScript.ipServer);
 			GUI.Label(new Rect(Screen.width-100, Screen.height-20, 100, 20), Network.player.ipAddress, configStyle);
 

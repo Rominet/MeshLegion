@@ -132,7 +132,7 @@ public class ClientInfo : MonoBehaviour, NetworkInterface
 
     public void sendWishesToServer(bool state)
     {
-        Debug.Log("[CLIENT INFO] sendWishesToServer <" + this.login + ">");
+        //Debug.Log("[CLIENT INFO] sendWishesToServer <" + this.login + ">");
         clientInformationsSerializable sI = new clientInformationsSerializable();
         sI.posX = this.pos.x;
 		sI.posY = this.pos.y;
@@ -158,7 +158,7 @@ public class ClientInfo : MonoBehaviour, NetworkInterface
 		if (Network.isClient) {
 						return;
 				}
-        Debug.Log("[CLIENT INFO] <"+this.login+"> receptWishesFromServer");
+        //Debug.Log("[CLIENT INFO] <"+this.login+"> receptWishesFromServer");
         BinaryFormatter bf = new BinaryFormatter();
         MemoryStream ms = new MemoryStream(wishes);
         clientInformationsSerializable newSI = (clientInformationsSerializable)bf.Deserialize(ms);

@@ -44,6 +44,8 @@ public class MonsterScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        if (Network.isServer)
+            return;
         AnimControlerScript.SelectAnimation(_currentState);
 	}
 	
@@ -53,6 +55,8 @@ public class MonsterScript : MonoBehaviour {
 	}
 
     void OnParticleCollision(GameObject other) {
+        if (Network.isServer)
+            return;
         if (_currentState != State.CHOKING)
             StartCoroutine("Choke");
     }
@@ -101,6 +105,8 @@ public class MonsterScript : MonoBehaviour {
 
     public void Aggro(Vector3 aggroPoint, float duration)
     {
+        if (Network.isServer)
+            return;
         if (NavScript != null)
         {
             NavScript.NavAgent.SetDestination(aggroPoint);
