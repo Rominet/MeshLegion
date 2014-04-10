@@ -11,7 +11,7 @@ public class XboxController : MonoBehaviour
     void Start()
     {
         _princessHasShot = false;
-        coolDownValue = 0.5f;
+        coolDownValue = 1.0f;
         currCD = 0.0f;
     }
 
@@ -21,9 +21,10 @@ public class XboxController : MonoBehaviour
 
         if(leftTrigger > 0.5f && !_princessHasShot && currCD == 0.0f)
         {
-            Debug.Log("log that");
+            Debug.Log("log that 1");
             _princessHasShot = true;
             currCD = coolDownValue;
+            this.gameObject.audio.Play();
         }
         else if (leftTrigger < 0.5f && _princessHasShot && currCD == 0.0f) 
         {
