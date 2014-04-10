@@ -40,7 +40,7 @@ public class LeapContoller : MonoBehaviour
             Debug.Log("log that");
             _princessHasShot = true;
             currCD = coolDownValue;
-            this.gameObject.audio.Play();
+            //this.gameObject.audio.Play();
         }
         else if (yAvgPos > 40.0f && _princessHasShot && currCD == 0.0f)
         {
