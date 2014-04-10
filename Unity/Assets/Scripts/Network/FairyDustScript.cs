@@ -11,6 +11,7 @@ public class fairyDustInformationsSerializable
 	public float posY;
 	public float posZ;
 	public bool click;
+    public bool clickRight;
 }
 
 public class FairyDustScript : MonoBehaviour, NetworkInterface {
@@ -31,6 +32,14 @@ public class FairyDustScript : MonoBehaviour, NetworkInterface {
         set { _faeryMask = value; }
     }
 
+    [SerializeField]
+    private AggroSprayScript _aggroScript;
+    public AggroSprayScript AggroScript
+    {
+        get { return _aggroScript; }
+        set { _aggroScript = value; }
+    }
+
     public GameObject Sphere;
 	private Vector3 pos;
 	private bool hasWishes;
@@ -42,6 +51,7 @@ public class FairyDustScript : MonoBehaviour, NetworkInterface {
     }
 
     private ClickState leftClick = ClickState.IDLE;
+    private ClickState rightClick = ClickState.IDLE;
 
 	// Use this for initialization
 	void Start () {
@@ -61,6 +71,14 @@ public class FairyDustScript : MonoBehaviour, NetworkInterface {
             leftClick = ClickState.RELEASING;
             PartSystem.emissionRate = 0;
         }
+        if (Input.GetMouseButtonDown(1))
+        {
+            rightClick = ClickState.CLICKING;
+        }
+        else if (Input.GetMouseButtonUp(1))
+        {
+            rightClick = ClickState.RELEASING;
+        }
 		if (hasWishes) {
 			this.sendWishesToServer(false);
 			this.hasWishes = false;
@@ -69,6 +87,8 @@ public class FairyDustScript : MonoBehaviour, NetworkInterface {
 
     void FixedUpdate()
     {
+        if (Network.isClient)
+            return;
         if (leftClick == ClickState.CLICKING) {
 				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 				RaycastHit hit;
@@ -82,15 +102,34 @@ public class FairyDustScript : MonoBehaviour, NetworkInterface {
 			hasWishes = true;
             leftClick = ClickState.IDLE;
 		}
+        if (rightClick == ClickState.CLICKING)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit, 100, FaeryMask))
+            {
+                this.pos = hit.point;
+                AggroScript.transform.position = hit.point;
+                AggroScript.StartAggro();
+                hasWishes = true;
+            }
+        }
+        else if (rightClick == ClickState.RELEASING)
+        {
+            hasWishes = true;
+            rightClick = ClickState.IDLE;
+        }
     }
 	public void sendWishesToServer(bool state)
 	{
-		//Debug.Log("[FAIRY DUST] sendWishesToServer <" + WorldInfo.login + ">");
+		Debug.Log("[FAIRY DUST] sendWishesToServer <" + WorldInfo.login + ">");
 		fairyDustInformationsSerializable sI = new fairyDustInformationsSerializable();
 		sI.posX = this.pos.x;
 		sI.posY = this.pos.y;
 		sI.posZ = this.pos.z;
 		sI.click = (leftClick == ClickState.CLICKING);
+        sI.clickRight = (rightClick == ClickState.CLICKING);
 		
 		BinaryFormatter bf = new BinaryFormatter();
 		MemoryStream ms = new MemoryStream();
@@ -101,7 +140,7 @@ public class FairyDustScript : MonoBehaviour, NetworkInterface {
 	
 	public void receptWishesFromServer(byte[] wishes)
 	{
-		//Debug.Log("[FAIRY DUST] <"+WorldInfo.login+"> receptWishesFromServer");
+		Debug.Log("[FAIRY DUST] <"+WorldInfo.login+"> receptWishesFromServer");
 		BinaryFormatter bf = new BinaryFormatter();
 		MemoryStream ms = new MemoryStream(wishes);
 		fairyDustInformationsSerializable newSI = (fairyDustInformationsSerializable)bf.Deserialize(ms);
@@ -113,5 +152,10 @@ public class FairyDustScript : MonoBehaviour, NetworkInterface {
 			//Debug.Log("[FAIRY DUST] <"+WorldInfo.login+"> receptWishesFromServer false");
 			PartSystem.emissionRate = 0;
 		}
+        if (newSI.clickRight)
+        {
+            AggroScript.transform.position = new Vector3(newSI.posX, newSI.posY, newSI.posZ);
+            AggroScript.StartAggro();
+        }
 	}
 }

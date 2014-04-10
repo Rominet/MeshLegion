@@ -88,7 +88,7 @@ public class MobManagerScript : MonoBehaviour, NetworkInterface {
 
     public void sendWishesToServer(bool state)
     {
-        Debug.Log("[MOB MANAGER] sendWishesToServer");
+        //Debug.Log("[MOB MANAGER] sendWishesToServer");
         MobManagerInfosSerializable mMSI = new MobManagerInfosSerializable();
         mMSI.listMIS = new List<MobInfosSerializable>();
         MobInfosSerializable mSI;// = new WorldInfosSerializable();
@@ -115,7 +115,7 @@ public class MobManagerScript : MonoBehaviour, NetworkInterface {
 
     public void receptWishesFromServer(byte[] wishes)
     {
-                Debug.Log("[MOB MANAGER] receptWishesFromServer");
+                //Debug.Log("[MOB MANAGER] receptWishesFromServer");
         MobManagerInfosSerializable mMSI = (MobManagerInfosSerializable)NetworkManager.byteToObject(wishes);
         int i = 0;
         foreach (MobInfosSerializable mobInfo in mMSI.listMIS)

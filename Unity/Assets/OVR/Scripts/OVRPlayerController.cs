@@ -406,7 +406,8 @@ public class OVRPlayerController : OVRComponent
 			// to match the game player direction
 			CameraController.SetOrientationOffset(OrientationOffset);
 			CameraController.SetYRotation(YRotation);
-            ClientInfo.rotate(CameraController.transform.rotation);
+            if(ClientInfo != null)
+                ClientInfo.rotate(CameraController.transform.rotation);
 		}
 	}
 	
