@@ -47,7 +47,10 @@ public class NavManagerScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        _targetTransform = Target.transform;
+        if (Target != null)
+            _targetTransform = Target.transform;
+        else
+            _targetTransform = GameObject.FindGameObjectWithTag("Player").transform;
         enabled = false;
 	}
 	
@@ -63,7 +66,8 @@ public class NavManagerScript : MonoBehaviour {
                 float addTime = remainingDist * DefaultRefreshPathTimer / DefaultCloseDistance;
                 NextPathUpdateTime = Time.time + addTime;
             }
-            NavAgent.SetDestination(_targetTransform.position);
+            if (_targetTransform != null)
+                NavAgent.SetDestination(_targetTransform.position);
         }
 	}
 }

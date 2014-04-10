@@ -55,7 +55,10 @@ public class GhostScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        _targetTransform = Target.transform;
+        if (Target != null)
+            _targetTransform = Target.transform;
+        else
+            _targetTransform = GameObject.FindGameObjectWithTag("Player").transform;
         _transform = transform;
 	}
 
@@ -65,7 +68,8 @@ public class GhostScript : MonoBehaviour {
         if (Time.time >= NextPathUpdateTime)
         {
             NextPathUpdateTime = Time.time + DefaultRefreshPathTimer;
-            TargetPos = _targetTransform.position;
+            if (_targetTransform != null)
+                TargetPos = _targetTransform.position;
             if (AllowedToMove)
             {
                 _transform.LookAt(TargetPos);
