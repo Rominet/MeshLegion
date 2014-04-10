@@ -1,0 +1,155 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!48 &4800000
+Shader:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: ~Additive-Multiply
+  m_Script: "Shader \"Particles/~Additive-Multiply\" {\nProperties {\n\t_TintColor
+    (\"Tint Color\", Color) = (0.5,0.5,0.5,0.5)\n\t_MainTex (\"Particle Texture\",
+    2D) = \"white\" {}\n\t_InvFade (\"Soft Particles Factor\", Range(0.01,3.0)) =
+    1.0\n}\n\nCategory {\n\tTags { \"Queue\"=\"Transparent\" \"IgnoreProjector\"=\"True\"
+    \"RenderType\"=\"Transparent\" }\n\tBlend One OneMinusSrcAlpha\n\tColorMask RGB\n\tCull
+    Off Lighting Off ZWrite Off Fog { Color (0,0,0,1) }\n\tBindChannels {\n\t\tBind
+    \"Color\", color\n\t\tBind \"Vertex\", vertex\n\t\tBind \"TexCoord\", texcoord\n\t}\n\t\n\t//
+    ---- Fragment program cards\n\tSubShader {\n\t\tPass {\n\t\t\n\t\t\tProgram \"vp\"
+    {\n// Vertex combos: 2\n//   opengl - ALU: 6 to 14\n//   d3d9 - ALU: 6 to 14\nSubProgram
+    \"opengl \" {\nKeywords { \"SOFTPARTICLES_OFF\" }\nBind \"vertex\" Vertex\nBind
+    \"color\" Color\nBind \"texcoord\" TexCoord0\nVector 5 [_MainTex_ST]\n\"!!ARBvp1.0\n#
+    6 ALU\nPARAM c[6] = { program.local[0],\n\t\tstate.matrix.mvp,\n\t\tprogram.local[5]
+    };\nMOV result.color, vertex.color;\nMAD result.texcoord[0].xy, vertex.texcoord[0],
+    c[5], c[5].zwzw;\nDP4 result.position.w, vertex.position, c[4];\nDP4 result.position.z,
+    vertex.position, c[3];\nDP4 result.position.y, vertex.position, c[2];\nDP4 result.position.x,
+    vertex.position, c[1];\nEND\n# 6 instructions, 0 R-regs\n\"\n}\n\nSubProgram \"d3d9
+    \" {\nKeywords { \"SOFTPARTICLES_OFF\" }\nBind \"vertex\" Vertex\nBind \"color\"
+    Color\nBind \"texcoord\" TexCoord0\nMatrix 0 [glstate_matrix_mvp]\nVector 4 [_MainTex_ST]\n\"vs_2_0\n;
+    6 ALU\ndcl_position0 v0\ndcl_color0 v1\ndcl_texcoord0 v2\nmov oD0, v1\nmad oT0.xy,
+    v2, c4, c4.zwzw\ndp4 oPos.w, v0, c3\ndp4 oPos.z, v0, c2\ndp4 oPos.y, v0, c1\ndp4
+    oPos.x, v0, c0\n\"\n}\n\nSubProgram \"xbox360 \" {\nKeywords { \"SOFTPARTICLES_OFF\"
+    }\nBind \"vertex\" Vertex\nBind \"color\" COLOR\nBind \"texcoord\" TexCoord0\nVector
+    4 [_MainTex_ST]\nMatrix 0 [glstate_matrix_mvp]\n\"vs_360\nbackbbabaaaaabaeaaaaaajmaaaaaaaaaaaaaaceaaaaaaaaaaaaaamaaaaaaaaa\naaaaaaaaaaaaaajiaaaaaabmaaaaaailpppoadaaaaaaaaacaaaaaabmaaaaaaaa\naaaaaaieaaaaaaeeaaacaaaeaaabaaaaaaaaaafaaaaaaaaaaaaaaagaaaacaaaa\naaaeaaaaaaaaaaheaaaaaaaafpengbgjgofegfhifpfdfeaaaaabaaadaaabaaae\naaabaaaaaaaaaaaaghgmhdhegbhegffpgngbhehcgjhifpgnhghaaaklaaadaaad\naaaeaaaeaaabaaaaaaaaaaaahghdfpddfpdaaadccodacodbdbdgdcdgcodaaakl\naaaaaaaaaaaaaajmaabbaaadaaaaaaaaaaaaaaaaaaaabiecaaaaaaabaaaaaaad\naaaaaaacaaaaacjaaabaaaadaaaakaaeaadafaafaaaadafaaaabpbkaaaaabaal\naaaabaakhabfdaadaaaabcaamcaaaaaaaaaaeaagaaaabcaameaaaaaaaaaacaak\naaaaccaaaaaaaaaaafpidaaaaaaaagiiaaaaaaaaafpibaaaaaaaagiiaaaaaaaa\nafpiaaaaaaaaapmiaaaaaaaamiapaaacaabliiaakbadadaamiapaaacaamgiiaa\nkladacacmiapaaacaalbdejekladabacmiapiadoaagmaadekladaaacmiapiaab\naaaaaaaaocababaamiadiaaaaalalabkilaaaeaeaaaaaaaaaaaaaaaaaaaaaaaa\n\"\n}\n\nSubProgram
+    \"ps3 \" {\nKeywords { \"SOFTPARTICLES_OFF\" }\nMatrix 256 [glstate_matrix_mvp]\nBind
+    \"vertex\" Vertex\nBind \"color\" Color\nBind \"texcoord\" TexCoord0\nVector 467
+    [_MainTex_ST]\n\"sce_vp_rsx // 6 instructions using 1 registers\n[Configuration]\n8\n0000000601090100\n[Microcode]\n96\n401f9c6c0040030d8106c0836041ff84401f9c6c011d3808010400d740619f9c\n401f9c6c01d0300d8106c0c360403f80401f9c6c01d0200d8106c0c360405f80\n401f9c6c01d0100d8106c0c360409f80401f9c6c01d0000d8106c0c360411f81\n\"\n}\n\nSubProgram
+    \"gles \" {\nKeywords { \"SOFTPARTICLES_OFF\" }\n\"!!GLES\n#define SHADER_API_GLES
+    1\n#define tex2D texture2D\n\n\n#ifdef VERTEX\n#define gl_ModelViewProjectionMatrix
+    glstate_matrix_mvp\nuniform mat4 glstate_matrix_mvp;\n\nvarying highp vec2 xlv_TEXCOORD0;\nvarying
+    lowp vec4 xlv_COLOR;\n\nuniform highp vec4 _MainTex_ST;\nattribute vec4 _glesMultiTexCoord0;\nattribute
+    vec4 _glesColor;\nattribute vec4 _glesVertex;\nvoid main ()\n{\n  gl_Position
+    = (gl_ModelViewProjectionMatrix * _glesVertex);\n  xlv_COLOR = _glesColor;\n  xlv_TEXCOORD0
+    = ((_glesMultiTexCoord0.xy * _MainTex_ST.xy) + _MainTex_ST.zw);\n}\n\n\n\n#endif\n#ifdef
+    FRAGMENT\n\nvarying highp vec2 xlv_TEXCOORD0;\nvarying lowp vec4 xlv_COLOR;\nuniform
+    lowp vec4 _TintColor;\nuniform sampler2D _MainTex;\nvoid main ()\n{\n  lowp vec4
+    col;\n  lowp vec4 tmpvar_1;\n  tmpvar_1 = texture2D (_MainTex, xlv_TEXCOORD0);\n
+    \ col.xyz = (((_TintColor.xyz * tmpvar_1.xyz) * xlv_COLOR.xyz) * 2.0);\n  col.w
+    = ((1.0 - tmpvar_1.w) * ((_TintColor.w * xlv_COLOR.w) * 2.0));\n  gl_FragData[0]
+    = col;\n}\n\n\n\n#endif\"\n}\n\nSubProgram \"opengl \" {\nKeywords { \"SOFTPARTICLES_ON\"
+    }\nBind \"vertex\" Vertex\nBind \"color\" Color\nBind \"texcoord\" TexCoord0\nVector
+    9 [_ProjectionParams]\nVector 10 [_MainTex_ST]\n\"!!ARBvp1.0\n# 14 ALU\nPARAM
+    c[11] = { { 0.5 },\n\t\tstate.matrix.modelview[0],\n\t\tstate.matrix.mvp,\n\t\tprogram.local[9..10]
+    };\nTEMP R0;\nTEMP R1;\nDP4 R1.w, vertex.position, c[8];\nDP4 R0.x, vertex.position,
+    c[5];\nMOV R0.w, R1;\nDP4 R0.y, vertex.position, c[6];\nMUL R1.xyz, R0.xyww, c[0].x;\nMUL
+    R1.y, R1, c[9].x;\nDP4 R0.z, vertex.position, c[7];\nMOV result.position, R0;\nDP4
+    R0.x, vertex.position, c[3];\nADD result.texcoord[1].xy, R1, R1.z;\nMOV result.color,
+    vertex.color;\nMAD result.texcoord[0].xy, vertex.texcoord[0], c[10], c[10].zwzw;\nMOV
+    result.texcoord[1].z, -R0.x;\nMOV result.texcoord[1].w, R1;\nEND\n# 14 instructions,
+    2 R-regs\n\"\n}\n\nSubProgram \"d3d9 \" {\nKeywords { \"SOFTPARTICLES_ON\" }\nBind
+    \"vertex\" Vertex\nBind \"color\" Color\nBind \"texcoord\" TexCoord0\nMatrix 0
+    [glstate_matrix_modelview0]\nMatrix 4 [glstate_matrix_mvp]\nVector 8 [_ProjectionParams]\nVector
+    9 [_ScreenParams]\nVector 10 [_MainTex_ST]\n\"vs_2_0\n; 14 ALU\ndef c11, 0.50000000,
+    0, 0, 0\ndcl_position0 v0\ndcl_color0 v1\ndcl_texcoord0 v2\ndp4 r1.w, v0, c7\ndp4
+    r0.x, v0, c4\nmov r0.w, r1\ndp4 r0.y, v0, c5\nmul r1.xyz, r0.xyww, c11.x\nmul
+    r1.y, r1, c8.x\ndp4 r0.z, v0, c6\nmov oPos, r0\ndp4 r0.x, v0, c2\nmad oT1.xy,
+    r1.z, c9.zwzw, r1\nmov oD0, v1\nmad oT0.xy, v2, c10, c10.zwzw\nmov oT1.z, -r0.x\nmov
+    oT1.w, r1\n\"\n}\n\nSubProgram \"xbox360 \" {\nKeywords { \"SOFTPARTICLES_ON\"
+    }\nBind \"vertex\" Vertex\nBind \"color\" COLOR\nBind \"texcoord\" TexCoord0\nVector
+    10 [_MainTex_ST]\nVector 8 [_ProjectionParams]\nVector 9 [_ScreenParams]\nMatrix
+    4 [glstate_matrix_modelview0]\nMatrix 0 [glstate_matrix_mvp]\n\"vs_360\nbackbbabaaaaableaaaaabeiaaaaaaaaaaaaaaceaaaaabdiaaaaabgaaaaaaaaa\naaaaaaaaaaaaabbaaaaaaabmaaaaabacpppoadaaaaaaaaafaaaaaabmaaaaaaaa\naaaaaaplaaaaaaiaaaacaaakaaabaaaaaaaaaaimaaaaaaaaaaaaaajmaaacaaai\naaabaaaaaaaaaaimaaaaaaaaaaaaaakoaaacaaajaaabaaaaaaaaaaimaaaaaaaa\naaaaaalmaaacaaaeaaaeaaaaaaaaaaniaaaaaaaaaaaaaaoiaaacaaaaaaaeaaaa\naaaaaaniaaaaaaaafpengbgjgofegfhifpfdfeaaaaabaaadaaabaaaeaaabaaaa\naaaaaaaafpfahcgpgkgfgdhegjgpgofagbhcgbgnhdaafpfdgdhcgfgfgofagbhc\ngbgnhdaaghgmhdhegbhegffpgngbhehcgjhifpgngpgegfgmhggjgfhhdaaaklkl\naaadaaadaaaeaaaeaaabaaaaaaaaaaaaghgmhdhegbhegffpgngbhehcgjhifpgn\nhghaaahghdfpddfpdaaadccodacodbdbdgdcdgcodaaaklklaaaaaaaaaaaaaaab\naaaaaaaaaaaaaaaaaaaaaabeaapmaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaeaaaaaabaiaacbaaaeaaaaaaaaaaaaaaaaaaaacigdaaaaaaabaaaaaaad\naaaaaaafaaaaacjaaabaaaadaaaakaaeaacafaafaaaadafaaaabpbfbaaaepcka\naaaababcaaaaaaapaaaaaabaaaaababeaaaababbaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaadpaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahabfdaadaaaabcaamcaaaaaa\naaaafaagaaaabcaameaaaaaaaaaagaaleabbbcaaccaaaaaaafpidaaaaaaaagii\naaaaaaaaafpicaaaaaaaagiiaaaaaaaaafpibaaaaaaaapmiaaaaaaaamiapaaaa\naabliiaakbadadaamiapaaaaaamgaaiikladacaamiapaaaaaalbdedekladabaa\nmiapaaaeaagmnajekladaaaamiapiadoaananaaaocaeaeaamiabaaaaaamgmgaa\nkbadagaamiabaaaaaalbmggmkladafaamiaiaaaaaagmmggmkladaeaamiahaaaa\naamagmaakbaeppaabeiaiaabaaaaaamgocaaaaaemiaeiaabafblmgblkladahaa\nmiapiaacaaaaaaaaocacacaamiadiaaaaalalabkilabakakkiiaaaaaaaaaaaeb\nmcaaaaaimiadiaabaamgbkbiklaaajaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n}\n\nSubProgram
+    \"ps3 \" {\nKeywords { \"SOFTPARTICLES_ON\" }\nMatrix 256 [glstate_matrix_modelview0]\nMatrix
+    260 [glstate_matrix_mvp]\nBind \"vertex\" Vertex\nBind \"color\" Color\nBind \"texcoord\"
+    TexCoord0\nVector 467 [_ProjectionParams]\nVector 466 [_MainTex_ST]\n\"sce_vp_rsx
+    // 13 instructions using 2 registers\n[Configuration]\n8\n0000000d01090200\n[Defaults]\n1\n465
+    1\n3f000000\n[Microcode]\n208\n401f9c6c0040030d8106c0836041ff84401f9c6c011d2808010400d740619f9c\n00001c6c01d0600d8106c0c360405ffc00001c6c01d0500d8106c0c360409ffc\n00001c6c01d0400d8106c0c360411ffc00001c6c01d0200d8106c0c360403ffc\n00009c6c01d0700d8106c0c360411ffc401f9c6c004000ff8086c08360405fa0\n40001c6c004000000286c08360403fa0401f9c6c0040000d8086c0836041ff80\n00001c6c009d100e008000c36041dffc00001c6c009d302a808000c360409ffc\n401f9c6c00c000080086c09540219fa1\n\"\n}\n\nSubProgram
+    \"gles \" {\nKeywords { \"SOFTPARTICLES_ON\" }\n\"!!GLES\n#define SHADER_API_GLES
+    1\n#define tex2D texture2D\n\n\n#ifdef VERTEX\n#define gl_ModelViewProjectionMatrix
+    glstate_matrix_mvp\nuniform mat4 glstate_matrix_mvp;\n#define gl_ModelViewMatrix
+    glstate_matrix_modelview0\nuniform mat4 glstate_matrix_modelview0;\n\nvarying
+    highp vec4 xlv_TEXCOORD1;\nvarying highp vec2 xlv_TEXCOORD0;\nvarying lowp vec4
+    xlv_COLOR;\n\n\nuniform highp vec4 _ProjectionParams;\nuniform highp vec4 _MainTex_ST;\nattribute
+    vec4 _glesMultiTexCoord0;\nattribute vec4 _glesColor;\nattribute vec4 _glesVertex;\nvoid
+    main ()\n{\n  highp vec4 tmpvar_1;\n  highp vec4 tmpvar_2;\n  tmpvar_2 = (gl_ModelViewProjectionMatrix
+    * _glesVertex);\n  highp vec4 o_i0;\n  highp vec4 tmpvar_3;\n  tmpvar_3 = (tmpvar_2
+    * 0.5);\n  o_i0 = tmpvar_3;\n  highp vec2 tmpvar_4;\n  tmpvar_4.x = tmpvar_3.x;\n
+    \ tmpvar_4.y = (tmpvar_3.y * _ProjectionParams.x);\n  o_i0.xy = (tmpvar_4 + tmpvar_3.w);\n
+    \ o_i0.zw = tmpvar_2.zw;\n  tmpvar_1 = o_i0;\n  tmpvar_1.z = -((gl_ModelViewMatrix
+    * _glesVertex).z);\n  gl_Position = tmpvar_2;\n  xlv_COLOR = _glesColor;\n  xlv_TEXCOORD0
+    = ((_glesMultiTexCoord0.xy * _MainTex_ST.xy) + _MainTex_ST.zw);\n  xlv_TEXCOORD1
+    = tmpvar_1;\n}\n\n\n\n#endif\n#ifdef FRAGMENT\n\nvarying highp vec4 xlv_TEXCOORD1;\nvarying
+    highp vec2 xlv_TEXCOORD0;\nvarying lowp vec4 xlv_COLOR;\nuniform highp vec4 _ZBufferParams;\nuniform
+    lowp vec4 _TintColor;\nuniform sampler2D _MainTex;\nuniform highp float _InvFade;\nuniform
+    sampler2D _CameraDepthTexture;\nvoid main ()\n{\n  lowp vec4 tmpvar_1;\n  lowp
+    vec4 col;\n  lowp vec4 tmpvar_2;\n  tmpvar_2 = texture2DProj (_CameraDepthTexture,
+    xlv_TEXCOORD1);\n  highp float z;\n  z = tmpvar_2.x;\n  highp vec4 tmpvar_3;\n
+    \ tmpvar_3 = (xlv_COLOR * clamp ((_InvFade * (1.0/(((_ZBufferParams.z * z) + _ZBufferParams.w))
+    - xlv_TEXCOORD1.z)), 0.0, 1.0));\n  tmpvar_1 = tmpvar_3;\n  lowp vec4 tmpvar_4;\n
+    \ tmpvar_4 = texture2D (_MainTex, xlv_TEXCOORD0);\n  col.xyz = (((_TintColor.xyz
+    * tmpvar_4.xyz) * tmpvar_1.xyz) * 2.0);\n  col.w = ((1.0 - tmpvar_4.w) * ((_TintColor.w
+    * tmpvar_1.w) * 2.0));\n  gl_FragData[0] = col;\n}\n\n\n\n#endif\"\n}\n\n}\nProgram
+    \"fp\" {\n// Fragment combos: 2\n//   opengl - ALU: 8 to 14, TEX: 1 to 2\n//   d3d9
+    - ALU: 8 to 13, TEX: 1 to 2\nSubProgram \"opengl \" {\nKeywords { \"SOFTPARTICLES_OFF\"
+    }\nVector 0 [_TintColor]\nSetTexture 0 [_MainTex] 2D\n\"!!ARBfp1.0\nOPTION ARB_precision_hint_fastest;\n#
+    8 ALU, 1 TEX\nPARAM c[2] = { program.local[0],\n\t\t{ 1, 2 } };\nTEMP R0;\nTEMP
+    R1;\nTEX R0, fragment.texcoord[0], texture[0], 2D;\nMUL R0.xyz, R0, c[0];\nMUL
+    R0.xyz, fragment.color.primary, R0;\nADD R0.w, -R0, c[1].x;\nMUL R1.x, fragment.color.primary.w,
+    c[0].w;\nMUL R0.w, R1.x, R0;\nMUL result.color.w, R0, c[1].y;\nMUL result.color.xyz,
+    R0, c[1].y;\nEND\n# 8 instructions, 2 R-regs\n\"\n}\n\nSubProgram \"d3d9 \" {\nKeywords
+    { \"SOFTPARTICLES_OFF\" }\nVector 0 [_TintColor]\nSetTexture 0 [_MainTex] 2D\n\"ps_2_0\n;
+    8 ALU, 1 TEX\ndcl_2d s0\ndef c1, 1.00000000, 2.00000000, 0, 0\ndcl v0\ndcl t0.xy\ntexld
+    r0, t0, s0\nmul_pp r0.xyz, r0, c0\nmul_pp r2.xyz, v0, r0\nadd_pp r1.x, -r0.w,
+    c1\nmul_pp r0.x, v0.w, c0.w\nmul r0.x, r0, r1\nmul r1.xyz, r2, c1.y\nmul r1.w,
+    r0.x, c1.y\nmov_pp oC0, r1\n\"\n}\n\nSubProgram \"xbox360 \" {\nKeywords { \"SOFTPARTICLES_OFF\"
+    }\nVector 0 [_TintColor]\nSetTexture 0 [_MainTex] 2D\n\"ps_360\nbackbbaaaaaaabaiaaaaaakmaaaaaaaaaaaaaaceaaaaaaliaaaaaaoaaaaaaaaa\naaaaaaaaaaaaaajaaaaaaabmaaaaaaidppppadaaaaaaaaacaaaaaabmaaaaaaaa\naaaaaahmaaaaaaeeaaadaaaaaaabaaaaaaaaaafaaaaaaaaaaaaaaagaaaacaaaa\naaabaaaaaaaaaagmaaaaaaaafpengbgjgofegfhiaaklklklaaaeaaamaaabaaab\naaabaaaaaaaaaaaafpfegjgoheedgpgmgphcaaklaaabaaadaaabaaaeaaabaaaa\naaaaaaaahahdfpddfpdaaadccodacodbdbdgdcdgcodaaaklaaaaaaaaaaaaaaab\naaaaaaaaaaaaaaaaaaaaaabeabpmaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaeaaaaaaagmbaaaacaaaaaaaaaiaaaaaaaaaaaabiecaaabaaadaaaaaaab\naaaadafaaaaapbkaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadpiaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaaabbaacaaaabcaameaaaaaaaaaafaadaaaaccaaaaaaaaaa\nbaaicaabbpbppgiiaaaaeaaaaabaaaabaaaaaablmcababaabeaoabaaaapmpmgm\nkbabaaaaamibabaaaeblgmblkaacppabbeahababaamamabloaacacabamihiaaa\naabfmagmobaaabaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n}\n\nSubProgram
+    \"ps3 \" {\nKeywords { \"SOFTPARTICLES_OFF\" }\nVector 0 [_TintColor]\nSetTexture
+    0 [_MainTex] 2D\n\"sce_fp_rsx // 10 instructions using 2 registers\n[Configuration]\n24\nffffffff000040250001ffff000000000000840002000000\n[Offsets]\n1\n_TintColor
+    2 0\n0000007000000030\n[Microcode]\n160\n9e021700c8011c9dc8000001c8003fe13e800140c8011c9dc8000001c8003fe1\n0e820240c8041c9dc8020001c800000100000000000000000000000000000000\n10820340c8041c9fc8020001c800000100000000000000000000000000003f80\n10800240c9001c9dc8020001c800000100000000000000000000000000000000\n0e800240c9001c9dc9041001c800000110810200c9001c9dc9041001c8000001\n\"\n}\n\nSubProgram
+    \"gles \" {\nKeywords { \"SOFTPARTICLES_OFF\" }\n\"!!GLES\"\n}\n\nSubProgram \"opengl
+    \" {\nKeywords { \"SOFTPARTICLES_ON\" }\nVector 0 [_ZBufferParams]\nVector 1 [_TintColor]\nFloat
+    2 [_InvFade]\nSetTexture 0 [_CameraDepthTexture] 2D\nSetTexture 1 [_MainTex] 2D\n\"!!ARBfp1.0\nOPTION
+    ARB_precision_hint_fastest;\n# 14 ALU, 2 TEX\nPARAM c[4] = { program.local[0..2],\n\t\t{
+    1, 2 } };\nTEMP R0;\nTEMP R1;\nTEX R1, fragment.texcoord[0], texture[1], 2D;\nTXP
+    R0.x, fragment.texcoord[1], texture[0], 2D;\nMAD R0.x, R0, c[0].z, c[0].w;\nRCP
+    R0.x, R0.x;\nADD R0.x, R0, -fragment.texcoord[1].z;\nMUL_SAT R0.x, R0, c[2];\nMUL
+    R0, fragment.color.primary, R0.x;\nMUL R1.xyz, R1, c[1];\nMUL R0.xyz, R0, R1;\nADD
+    R1.x, -R1.w, c[3];\nMUL R0.w, R0, c[1];\nMUL R0.w, R0, R1.x;\nMUL result.color.xyz,
+    R0, c[3].y;\nMUL result.color.w, R0, c[3].y;\nEND\n# 14 instructions, 2 R-regs\n\"\n}\n\nSubProgram
+    \"d3d9 \" {\nKeywords { \"SOFTPARTICLES_ON\" }\nVector 0 [_ZBufferParams]\nVector
+    1 [_TintColor]\nFloat 2 [_InvFade]\nSetTexture 0 [_CameraDepthTexture] 2D\nSetTexture
+    1 [_MainTex] 2D\n\"ps_2_0\n; 13 ALU, 2 TEX\ndcl_2d s0\ndcl_2d s1\ndef c3, 1.00000000,
+    2.00000000, 0, 0\ndcl v0\ndcl t0.xy\ndcl t1\ntexldp r0, t1, s0\ntexld r1, t0,
+    s1\nmad r0.x, r0, c0.z, c0.w\nrcp r0.x, r0.x\nadd r0.x, r0, -t1.z\nmul_sat r0.x,
+    r0, c2\nmul_pp r0, v0, r0.x\nmul_pp r1.xyz, r1, c1\nmul_pp r1.xyz, r0, r1\nadd_pp
+    r0.x, -r1.w, c3\nmul_pp r2.x, r0.w, c1.w\nmul r0.x, r2, r0\nmul r1.xyz, r1, c3.y\nmul
+    r1.w, r0.x, c3.y\nmov_pp oC0, r1\n\"\n}\n\nSubProgram \"xbox360 \" {\nKeywords
+    { \"SOFTPARTICLES_ON\" }\nFloat 2 [_InvFade]\nVector 1 [_TintColor]\nVector 0
+    [_ZBufferParams]\nSetTexture 0 [_MainTex] 2D\nSetTexture 1 [_CameraDepthTexture]
+    2D\n\"ps_360\nbackbbaaaaaaabieaaaaaapeaaaaaaaaaaaaaaceaaaaabdaaaaaabfiaaaaaaaa\naaaaaaaaaaaaabaiaaaaaabmaaaaaapkppppadaaaaaaaaafaaaaaabmaaaaaaaa\naaaaaapdaaaaaaiaaaadaaabaaabaaaaaaaaaajeaaaaaaaaaaaaaakeaaacaaac\naaabaaaaaaaaaalaaaaaaaaaaaaaaamaaaadaaaaaaabaaaaaaaaaajeaaaaaaaa\naaaaaamjaaacaaabaaabaaaaaaaaaaneaaaaaaaaaaaaaaoeaaacaaaaaaabaaaa\naaaaaaneaaaaaaaafpedgbgngfhcgbeegfhahegifegfhihehfhcgfaaaaaeaaam\naaabaaabaaabaaaaaaaaaaaafpejgohgeggbgegfaaklklklaaaaaaadaaabaaab\naaabaaaaaaaaaaaafpengbgjgofegfhiaafpfegjgoheedgpgmgphcaaaaabaaad\naaabaaaeaaabaaaaaaaaaaaafpfkechfgggggfhcfagbhcgbgnhdaahahdfpddfp\ndaaadccodacodbdbdgdcdgcodaaaklklaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaa\naaaaaabeabpmaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeaaaaaaale\nbaaaadaaaaaaaaaiaaaaaaaaaaaacigdaaadaaahaaaaaaabaaaadafaaaaapbfb\naaaapckaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadpiaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaafaeaacaaaabcaameaaaaaaaaaagaagcaambcaaccaaaaaaemiiacad\naablblblkbacababmiamacaaaablkmaaobacabaalibicaabbpbppbppaaaaeaaa\nbaaiaaabbpbppefiaaaaeaaamiaiacacaablmgblilacaaaaemihacadaabemabl\nkbaaabacmiaiacacacblmgaaoaacabaabfibacaaaablgmlbkbacacaaaaboacaa\naagmpmgmobaaacaalibbacaaaablgmedobadacppbeaoacacaapmabgmobadaaaa\namihiaaaaabfbfgmoaacacacaaaaaaaaaaaaaaaaaaaaaaaa\"\n}\n\nSubProgram
+    \"ps3 \" {\nKeywords { \"SOFTPARTICLES_ON\" }\nVector 0 [_ZBufferParams]\nVector
+    1 [_TintColor]\nFloat 2 [_InvFade]\nSetTexture 0 [_CameraDepthTexture] 2D\nSetTexture
+    1 [_MainTex] 2D\n\"sce_fp_rsx // 20 instructions using 2 registers\n[Configuration]\n24\nffffffff0000c0250003fffd000000000000840002000000\n[Offsets]\n3\n_ZBufferParams
+    1 0\n00000060\n_TintColor 2 0\n0000011000000090\n_InvFade 1 0\n000000e0\n[Microcode]\n320\nb6021800c8011c9dc8000001c8003fe108000500a6041c9dc8020001c8000001\n00013f7f00013b7f0001377f000000009e021702c8011c9dc8000001c8003fe1\n3e800140c8011c9dc8000001c8003fe108000400c8001c9dc8020001fe020001\n0000000000000000000000000000000008001a0054001c9dc8000001c8000001\n0e840240c8041c9dc8020001c800000100000000000000000000000000000000\n10820340c8041c9f00020000c800000100003f80000000000000000000000000\na8000300c8011c9fc8000001c8003fe108008200c8001c9d00020000c8000001\n000000000000000000000000000000001e800200c9001c9d54000001c8000001\n02820240ff001c9dfe020001c800000100000000000000000000000000000000\n1080020001041c9cc9041001c80000010e810240c9001c9dc9081001c8000001\n\"\n}\n\nSubProgram
+    \"gles \" {\nKeywords { \"SOFTPARTICLES_ON\" }\n\"!!GLES\"\n}\n\n}\n\n#LINE 82\n
+    \n\t\t}\n\t} \t\n\n\t// ---- Dual texture cards\n\tSubShader {\n\t\tPass {\n\t\t\tSetTexture
+    [_MainTex] {\n\t\t\t\tconstantColor [_TintColor]\n\t\t\t\tcombine constant * texture,
+    constant * primary DOUBLE\n\t\t\t}\n\t\t\tSetTexture [_MainTex] {\n\t\t\t\tcombine
+    previous * primary DOUBLE, one - texture * previous\n\t\t\t}\n\t\t}\n\t}\n\t\n\t//
+    ---- Single texture cards (does not do color tint)\n\tSubShader {\n\t\tPass {\n\t\t\tSetTexture
+    [_MainTex] {\n\t\t\t\tcombine texture * primary DOUBLE, one - texture * primary\n\t\t\t}\n\t\t}\n\t}\n}\n}\n"
+  m_PathName: 
+  m_Dependencies: []
+  m_ShaderIsBaked: 0
+  errors: []
+  m_DefaultTextures: {}
+--- !u!1002 &4800001
+EditorExtensionImpl:
+  serializedVersion: 6
