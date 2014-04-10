@@ -34,7 +34,7 @@ public class CameraBorderScript : MonoBehaviour
 
     void Start()
     {
-        int positionX = (int)(ArenaSize[0] / 2);
+        float positionX = this.transform.position.x;
         Borders[(int)(_BLabel.LEFT)].transform.position = new Vector3(-positionX, 0.5f, 0.0f);
         BoxCollider col = (BoxCollider)Borders[(int)(_BLabel.LEFT)].collider;
         col.size = new Vector3(1, 1, ArenaSize[1]);
@@ -44,7 +44,7 @@ public class CameraBorderScript : MonoBehaviour
         col = (BoxCollider)Borders[(int)(_BLabel.RIGHT)].collider;
         col.size = new Vector3(1, 1, ArenaSize[1]);
 
-        int positionY = (int)(ArenaSize[1] / 2);
+        float positionY = this.transform.position.y;
         Borders[(int)(_BLabel.FRONT)].transform.position = new Vector3(0.0f, 0.5f, positionY);
         col = (BoxCollider)Borders[(int)(_BLabel.FRONT)].collider;
         col.size = new Vector3(ArenaSize[0], 1, 1);

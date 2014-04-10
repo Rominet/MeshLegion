@@ -26,6 +26,7 @@ public class PerfumeSprayScript : MonoBehaviour
     float coolDownValue;
     float currCD;
     double yAvgPos;
+    ClientInfo clientInfo;
 
     // Use this for initialization
     void Start()
@@ -34,6 +35,7 @@ public class PerfumeSprayScript : MonoBehaviour
         _princessHasShot = false;
         coolDownValue = 1.0f;
         currCD = 0.0f;
+        this.clientInfo = this.transform.parent.GetComponent<ClientInfo>();
     }
 
     // Update is called once per frame
@@ -75,6 +77,7 @@ public class PerfumeSprayScript : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
+            this.clientInfo.fire();
             ApplySpray();
         }
     }
@@ -83,7 +86,6 @@ public class PerfumeSprayScript : MonoBehaviour
     {
         PerfumeSpray.rotation = transform.rotation;
         PerfumeSpray.position = transform.position;
-
         PartSystem.Play();
     }
 }

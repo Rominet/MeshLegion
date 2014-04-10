@@ -71,6 +71,18 @@ public class OVRPlayerController : OVRComponent
 	// We should attach objects to this if we want them to rotate 
 	// separately from the head (i.e. the body)
 	protected Transform DirXform = null;
+
+    private ClientInfo clientInfo;
+
+    public ClientInfo ClientInfo
+    {
+        get {
+            if (clientInfo == null)
+                clientInfo = GetComponent<ClientInfo>();
+            return clientInfo; 
+        }
+        set { clientInfo = value; }
+    }
 	
 	// We can adjust these to influence speed and rotation of player controller
 	private float MoveScaleMultiplier     = 5.0f; 
@@ -394,6 +406,7 @@ public class OVRPlayerController : OVRComponent
 			// to match the game player direction
 			CameraController.SetOrientationOffset(OrientationOffset);
 			CameraController.SetYRotation(YRotation);
+            ClientInfo.rotate(CameraController.transform.rotation);
 		}
 	}
 	

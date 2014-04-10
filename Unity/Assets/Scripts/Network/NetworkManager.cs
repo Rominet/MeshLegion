@@ -27,8 +27,6 @@ public class NetworkManager : MonoBehaviour {
 	private GameObject cameraFirstPerson;
 	[SerializeField]
 	private GameObject cameraThirdPerson;
-	[SerializeField]
-	private ClientInfo clientInfo;
 
 	private Vector3 playerSpawn = new Vector3(0, 0, 0);
 	//private bool inGame;
@@ -97,7 +95,14 @@ public class NetworkManager : MonoBehaviour {
     {
         Debug.LogError("[NETWORK MANAGER] addNewClient: new client <" + login + "> added to the client list");
 
-        this.clients.Add(login, clientInfo);
+        ClientInfo c = this.cameraFirstPerson.AddComponent("ClientInfo") as ClientInfo;
+        if (c == null)
+        {
+            Debug.LogError("[NETWORK MANAGER] addNewClient: clientInfo was not created");
+            return;
+        }
+
+        this.clients.Add(login, c);
     }
 
     public void clientInfoIsReady(string login, ClientInfo c)

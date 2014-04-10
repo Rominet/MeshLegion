@@ -28,6 +28,7 @@ public class ClientInfo : MonoBehaviour, NetworkInterface
     private static readonly float SPEED = 4.0f;
 
     private NetworkManager netWManager;
+    private Transform cameraOVR;
 
 	private Quaternion rotateQuater;
 	private Vector3 pos;
@@ -61,15 +62,45 @@ public class ClientInfo : MonoBehaviour, NetworkInterface
         this.num = -1;
         //Player
 		this.activateFire = false;
-        //this.gameObjectPlayer = this.gameObject;
+        this.cameraOVR = GetComponentInChildren<OVRCameraController>().transform;
 		this.rotateQuater = default(Quaternion);
         this.hasWishes = false;
         this.state = "clientInfo start";
         this.score = 0;
+
+        this.pos = this.transform.position;
+        this.rotateQuater = this.cameraOVR.rotation;
+
         this.netWManager.clientInfoIsReady(this.login, this);
         instance = this;
 
 		this.pss = GetComponentInChildren<PerfumeSprayScript>();
+    }
+
+    void Update()
+    {
+        if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow))
+        {
+            this.pos = this.transform.position;
+            this.hasWishes = true;
+        }
+        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow))
+        {
+            this.rotateQuater = this.cameraOVR.rotation;
+            this.hasWishes = true; 
+        }
+        if (this.hasWishes)
+        {
+            //Debug.Log("[CLIENT INFO] Update: <"+this.login+"> have some wishes");
+            this.sendWishesToServer(false);
+            this.hasWishes = false;
+        }
+    }
+
+    public void rotate(Quaternion q)
+    {
+        this.rotateQuater = q;
+        this.hasWishes = true; 
     }
 
     public void setState(string state) { this.state = state; }
@@ -98,32 +129,10 @@ public class ClientInfo : MonoBehaviour, NetworkInterface
 		this.activateFire = true;
 		this.hasWishes = true;
 	}
-    public void deplacement(Vector3 p)
-    {
-		this.pos = p;
-        this.hasWishes = true;
-    }
-
-	public void rotate(Quaternion q) {
-		this.rotateQuater = q;
-		this.hasWishes = true; 
-	}
-
-    void Update()
-    {
-        if (WorldInfo.state != "PLAY")
-            return;
-
-        if (this.hasWishes) {
-            //Debug.Log("[CLIENT INFO] Update: <"+this.login+"> have some wishes");
-            this.sendWishesToServer(false);
-            this.hasWishes = false;
-        }
-    }
 
     public void sendWishesToServer(bool state)
     {
-        //Debug.Log("[CLIENT INFO] sendWishesToServer <" + this.login + ">");
+        Debug.Log("[CLIENT INFO] sendWishesToServer <" + this.login + ">");
         clientInformationsSerializable sI = new clientInformationsSerializable();
         sI.posX = this.pos.x;
 		sI.posY = this.pos.y;
@@ -149,7 +158,7 @@ public class ClientInfo : MonoBehaviour, NetworkInterface
 		if (Network.isClient) {
 						return;
 				}
-        //Debug.Log("[CLIENT INFO] <"+this.login+"> receptWishesFromServer");
+        Debug.Log("[CLIENT INFO] <"+this.login+"> receptWishesFromServer");
         BinaryFormatter bf = new BinaryFormatter();
         MemoryStream ms = new MemoryStream(wishes);
         clientInformationsSerializable newSI = (clientInformationsSerializable)bf.Deserialize(ms);
@@ -161,6 +170,6 @@ public class ClientInfo : MonoBehaviour, NetworkInterface
 		{
             pss.ApplySpray();
 		}
-		this.transform.rotation = new Quaternion (newSI.rotateQuaterX, newSI.rotateQuaterY, newSI.rotateQuaterZ, newSI.rotateQuaterW);
+		this.cameraOVR.rotation = new Quaternion (newSI.rotateQuaterX, newSI.rotateQuaterY, newSI.rotateQuaterZ, newSI.rotateQuaterW);
     }
 }
