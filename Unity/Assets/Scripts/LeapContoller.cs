@@ -6,19 +6,17 @@ public class LeapContoller : MonoBehaviour
 {
     Controller controller;
     InteractionBox _iBox;
-    bool _bitchHasShot;
+    bool _princessHasShot;
     float coolDownValue;
     float currCD;
-    bool cooldowner;
     double yAvgPos;
 
     void Start()
     {
         controller = new Controller();
-        _bitchHasShot = false;
+        _princessHasShot = false;
         coolDownValue = 0.5f;
         currCD = 0.0f;
-        cooldowner = false;
 
     }
 
@@ -37,27 +35,16 @@ public class LeapContoller : MonoBehaviour
             yAvgPos = avgPos.y;
         }
 
-        if(yAvgPos < 40.0f && !_bitchHasShot && currCD == 0.0f)
+        if(yAvgPos < 40.0f && !_princessHasShot && currCD == 0.0f)
         {
             Debug.Log("log that");
-            _bitchHasShot = true;
+            _princessHasShot = true;
             currCD = coolDownValue;
         }
-        else if (yAvgPos > 40.0f && _bitchHasShot && currCD == 0.0f)
+        else if (yAvgPos > 40.0f && _princessHasShot && currCD == 0.0f)
         {
-            _bitchHasShot = false;
+            _princessHasShot = false;
         }
-
-        //if(!_bitchHasShot && frame.Pointables.Count == 0)
-        //{
-        //    _bitchHasShot = true;
-        //    currCD = coolDownValue;
-        //    Debug.Log("log that bitch");
-        //}
-        //else if(_bitchHasShot && frame.Pointables.Count != 0 && currCD == 0.0f)
-        //{
-        //    _bitchHasShot = false;
-        //}
 
         if (currCD != 0.0f)
         {
