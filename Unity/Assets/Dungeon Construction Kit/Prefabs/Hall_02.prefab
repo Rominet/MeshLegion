@@ -1316,7 +1316,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400160}
-  - 114: {fileID: 11400002}
   m_Layer: 0
   m_Name: barrel_02
   m_TagString: Untagged
@@ -4008,7 +4007,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2, guid: 00000000000000000000000000000000, type: 0}
+  - {fileID: 0}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -4029,7 +4028,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2, guid: 00000000000000000000000000000000, type: 0}
+  - {fileID: 0}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -4050,7 +4049,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2, guid: 00000000000000000000000000000000, type: 0}
+  - {fileID: 0}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -4071,7 +4070,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2, guid: 00000000000000000000000000000000, type: 0}
+  - {fileID: 0}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -4676,28 +4675,28 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100166}
-  m_Mesh: {fileID: 23, guid: 00000000000000000000000000000000, type: 0}
+  m_Mesh: {fileID: 0}
 --- !u!33 &3300136
 MeshFilter:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100168}
-  m_Mesh: {fileID: 23, guid: 00000000000000000000000000000000, type: 0}
+  m_Mesh: {fileID: 0}
 --- !u!33 &3300138
 MeshFilter:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100170}
-  m_Mesh: {fileID: 23, guid: 00000000000000000000000000000000, type: 0}
+  m_Mesh: {fileID: 0}
 --- !u!33 &3300140
 MeshFilter:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100172}
-  m_Mesh: {fileID: 23, guid: 00000000000000000000000000000000, type: 0}
+  m_Mesh: {fileID: 0}
 --- !u!33 &3300142
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -5498,7 +5497,7 @@ MeshCollider:
   serializedVersion: 2
   m_SmoothSphereCollisions: 0
   m_Convex: 0
-  m_Mesh: {fileID: 23, guid: 00000000000000000000000000000000, type: 0}
+  m_Mesh: {fileID: 0}
 --- !u!64 &6400130
 MeshCollider:
   m_ObjectHideFlags: 1
@@ -5511,7 +5510,7 @@ MeshCollider:
   serializedVersion: 2
   m_SmoothSphereCollisions: 0
   m_Convex: 0
-  m_Mesh: {fileID: 23, guid: 00000000000000000000000000000000, type: 0}
+  m_Mesh: {fileID: 0}
 --- !u!64 &6400132
 MeshCollider:
   m_ObjectHideFlags: 1
@@ -5524,7 +5523,7 @@ MeshCollider:
   serializedVersion: 2
   m_SmoothSphereCollisions: 0
   m_Convex: 0
-  m_Mesh: {fileID: 23, guid: 00000000000000000000000000000000, type: 0}
+  m_Mesh: {fileID: 0}
 --- !u!64 &6400134
 MeshCollider:
   m_ObjectHideFlags: 1
@@ -5537,7 +5536,7 @@ MeshCollider:
   serializedVersion: 2
   m_SmoothSphereCollisions: 0
   m_Convex: 0
-  m_Mesh: {fileID: 23, guid: 00000000000000000000000000000000, type: 0}
+  m_Mesh: {fileID: 0}
 --- !u!64 &6400136
 MeshCollider:
   m_ObjectHideFlags: 1
@@ -5828,18 +5827,6 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
---- !u!114 &11400002
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100160}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a61ec4208efc9e40893250ec82199f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  generateTriangleStrips: 1
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1
