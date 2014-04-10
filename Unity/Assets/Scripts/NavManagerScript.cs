@@ -29,6 +29,12 @@ public class NavManagerScript : MonoBehaviour {
     }
 
     private float _nextPathUpdateTime = 0.0f;
+    public float NextPathUpdateTime
+    {
+        get { return _nextPathUpdateTime; }
+        set { _nextPathUpdateTime = value; }
+    }
+
     private Transform _targetTransform;
 
     [SerializeField]
@@ -42,19 +48,20 @@ public class NavManagerScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         _targetTransform = Target.transform;
+        enabled = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (Time.time >= _nextPathUpdateTime)
+        if (Time.time >= NextPathUpdateTime)
         {
             float remainingDist = NavAgent.remainingDistance;
             if (remainingDist >= DefaultCloseDistance)
-                _nextPathUpdateTime = Time.time + DefaultRefreshPathTimer;
+                NextPathUpdateTime = Time.time + DefaultRefreshPathTimer;
             else
             {
                 float addTime = remainingDist * DefaultRefreshPathTimer / DefaultCloseDistance;
-                _nextPathUpdateTime = Time.time + addTime;
+                NextPathUpdateTime = Time.time + addTime;
             }
             NavAgent.SetDestination(_targetTransform.position);
         }

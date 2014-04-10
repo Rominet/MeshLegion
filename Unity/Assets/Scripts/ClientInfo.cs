@@ -142,6 +142,7 @@ public class ClientInfo : MonoBehaviour, NetworkInterface
         bf.Serialize(ms, sI);
 
         this.netWManager.sendWishes(this.login, ms.ToArray(), state, 0);
+
     }
 
     public void receptWishesFromServer(byte[] wishes)
