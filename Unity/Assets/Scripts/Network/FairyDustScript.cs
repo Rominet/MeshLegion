@@ -85,7 +85,7 @@ public class FairyDustScript : MonoBehaviour, NetworkInterface {
     }
 	public void sendWishesToServer(bool state)
 	{
-		Debug.Log("[FAIRY DUST] sendWishesToServer <" + WorldInfo.login + ">");
+		//Debug.Log("[FAIRY DUST] sendWishesToServer <" + WorldInfo.login + ">");
 		fairyDustInformationsSerializable sI = new fairyDustInformationsSerializable();
 		sI.posX = this.pos.x;
 		sI.posY = this.pos.y;
@@ -101,16 +101,16 @@ public class FairyDustScript : MonoBehaviour, NetworkInterface {
 	
 	public void receptWishesFromServer(byte[] wishes)
 	{
-		Debug.Log("[FAIRY DUST] <"+WorldInfo.login+"> receptWishesFromServer");
+		//Debug.Log("[FAIRY DUST] <"+WorldInfo.login+"> receptWishesFromServer");
 		BinaryFormatter bf = new BinaryFormatter();
 		MemoryStream ms = new MemoryStream(wishes);
 		fairyDustInformationsSerializable newSI = (fairyDustInformationsSerializable)bf.Deserialize(ms);
 		if (newSI.click) {
-			Debug.Log ("[FAIRY DUST] <" + WorldInfo.login + "> receptWishesFromServer tru");
+			//Debug.Log ("[FAIRY DUST] <" + WorldInfo.login + "> receptWishesFromServer tru");
 			PartSystem.emissionRate = _defaultParticleEmissionRate;
 			Sphere.transform.position = new Vector3 (newSI.posX, newSI.posY, newSI.posZ);
 		} else {
-			Debug.Log("[FAIRY DUST] <"+WorldInfo.login+"> receptWishesFromServer false");
+			//Debug.Log("[FAIRY DUST] <"+WorldInfo.login+"> receptWishesFromServer false");
 			PartSystem.emissionRate = 0;
 		}
 	}
