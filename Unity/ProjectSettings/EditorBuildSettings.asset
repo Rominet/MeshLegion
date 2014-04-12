@@ -17,3 +17,5 @@ EditorBuildSettings:
     path: Assets/Scenes/Fairytale.unity
   - enabled: 1
     path: Assets/Scenes/MainScene.unity
+  - enabled: 1
+    path: Assets/Scenes/Victory.unity
