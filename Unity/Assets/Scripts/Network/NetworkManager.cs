@@ -51,8 +51,8 @@ public class NetworkManager : MonoBehaviour {
         this.cameraFirstPerson.GetComponent<OVRGamepadController>().enabled = enabled;
         this.cameraFirstPerson.GetComponent<OVRPlayerController>().enabled = enabled;
         this.cameraFirstPerson.GetComponent<OVRMainMenu>().enabled = enabled;
-        this.cameraFirstPerson.GetComponentInChildren<OVRCameraController>().enabled = enabled;
-        this.cameraFirstPerson.GetComponentInChildren<OVRDevice>().enabled = enabled;
+        this.cameraFirstPerson.GetComponentInChildren<OVRPlayerController>().enabled = enabled;
+        this.cameraFirstPerson.GetComponentInChildren<OVRManager>().enabled = enabled;
         foreach (var cam in this.cameraFirstPerson.GetComponentsInChildren<Camera>())
         {
             cam.enabled = enabled;

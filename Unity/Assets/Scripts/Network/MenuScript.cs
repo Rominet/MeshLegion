@@ -17,7 +17,7 @@ public class MenuScript : MonoBehaviour
 	[SerializeField]
 	private MeshRenderer backButton;
 
-	private static string 		   ipServer = "192.168.173.174";
+	private static string 		   ipServer = "192.168.137.208";
 	private static readonly int portServer = 6600;
 
 	private static readonly string ipFacilitator = "67.225.180.24";

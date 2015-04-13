@@ -62,7 +62,7 @@ public class ClientInfo : MonoBehaviour, NetworkInterface
         this.num = -1;
         //Player
 		this.activateFire = false;
-        this.cameraOVR = GetComponentInChildren<OVRCameraController>().transform;
+        this.cameraOVR = GetComponentInChildren<OVRPlayerController>().transform;
 		this.rotateQuater = default(Quaternion);
         this.hasWishes = false;
         this.state = "clientInfo start";
